@@ -21,10 +21,10 @@ function calculateDial ( DIAL_TURN:string, dial:number, ticks:number ): any  {
     const NUMBERS_TO_TURN = Number(DIAL_TURN.match(regexToUse)?.join(""));   // Extract the number from DIAL_TURN
     let tmpDial:number = dial;
     let tmpTicks:number = ticks;
-    // let multiplier:number = 0;
+    let multiplier:number = 0;
     
     
-    console.log(tmpDial, DIRECTION_TO_TURN, DIAL_TURN.match(regexToUse)?.join(""));
+    // console.log(tmpDial, DIRECTION_TO_TURN, DIAL_TURN.match(regexToUse)?.join(""));
 
     // If the direction were to be right, add the two numbers
     if(DIRECTION_TO_TURN == 'R')    {
@@ -35,7 +35,11 @@ function calculateDial ( DIAL_TURN:string, dial:number, ticks:number ): any  {
         }
         // Get the remainder
         else if(dial + NUMBERS_TO_TURN > 99)    {
-            tmpDial = (dial + NUMBERS_TO_TURN) - (100);
+            do{
+                multiplier++;
+                // console.log(multiplier);
+            } while ((dial + NUMBERS_TO_TURN) > (100 * (multiplier+1)));
+            tmpDial = (dial + NUMBERS_TO_TURN) - (100 * multiplier);
         }
         else    {
             tmpDial = dial + NUMBERS_TO_TURN;
@@ -50,14 +54,18 @@ function calculateDial ( DIAL_TURN:string, dial:number, ticks:number ): any  {
         }
         // Get the remainder
         else if(dial - NUMBERS_TO_TURN < 0) {
-            tmpDial = (dial - NUMBERS_TO_TURN) + (100);
+            do { 
+                multiplier++;
+                // console.log(multiplier);
+            } while ((NUMBERS_TO_TURN - dial) > (100 * (multiplier)));
+            tmpDial = (dial - NUMBERS_TO_TURN) + (100 * multiplier);
         }
         else    {
             tmpDial = dial - NUMBERS_TO_TURN;
         }
     }
 
-    console.log("Current dial:", tmpDial, "Current ticks:", tmpTicks, "\n");
+    console.log("Current dial:", tmpDial, "Current ticks:", tmpTicks);
     return [tmpDial, tmpTicks];
 }
 
@@ -76,5 +84,5 @@ function main ( FILE_TO_USE:string ): void {
     }
 }
 
-const FILE = 'example-input.txt';
+const FILE = 'puzzle-input.txt';
 main(FILE);

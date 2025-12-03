@@ -17,39 +17,53 @@ function createFileReader(FILE_TO_READ) {
     }
 }
 function calculateDial(DIAL_TURN, dial, ticks) {
-    var _a, _b;
+    var _a;
     var DIRECTION_TO_TURN = DIAL_TURN.charAt(0); // This will either be "R" or "L"
     var regexToUse = /[0-9]/g;
     var NUMBERS_TO_TURN = Number((_a = DIAL_TURN.match(regexToUse)) === null || _a === void 0 ? void 0 : _a.join("")); // Extract the number from DIAL_TURN
     var tmpDial = dial;
     var tmpTicks = ticks;
     var multiplier = 0;
-    console.log(tmpDial, DIRECTION_TO_TURN, (_b = DIAL_TURN.match(regexToUse)) === null || _b === void 0 ? void 0 : _b.join(""));
+    // console.log(tmpDial, DIRECTION_TO_TURN, DIAL_TURN.match(regexToUse)?.join(""));
+    // If the direction were to be right, add the two numbers
     if (DIRECTION_TO_TURN == 'R') {
+        // If the dial is pointing at the 0, add it to the tick.
         if (((tmpDial + NUMBERS_TO_TURN) % 100) == 0) {
             tmpDial = 0;
             tmpTicks++;
         }
+        // Get the remainder
         else if (dial + NUMBERS_TO_TURN > 99) {
-            tmpDial = (dial + NUMBERS_TO_TURN) - (100);
+            do {
+                multiplier++;
+                // console.log(multiplier);
+            } while ((dial + NUMBERS_TO_TURN) > (100 * (multiplier + 1)));
+            tmpDial = (dial + NUMBERS_TO_TURN) - (100 * multiplier);
         }
         else {
             tmpDial = dial + NUMBERS_TO_TURN;
         }
     }
+    // If the direction were to be left, subtract the two numbers
     else {
+        // If the dial is pointing at the 0, add it to the tick.
         if (((tmpDial - NUMBERS_TO_TURN) % 100) == 0) {
             tmpDial = 0;
             tmpTicks++;
         }
+        // Get the remainder
         else if (dial - NUMBERS_TO_TURN < 0) {
-            tmpDial = (dial - NUMBERS_TO_TURN) + (100);
+            do {
+                multiplier++;
+                // console.log(multiplier);
+            } while ((NUMBERS_TO_TURN - dial) > (100 * (multiplier)));
+            tmpDial = (dial - NUMBERS_TO_TURN) + (100 * multiplier);
         }
         else {
             tmpDial = dial - NUMBERS_TO_TURN;
         }
     }
-    console.log("Current dial:", tmpDial, "Current ticks:", tmpTicks, "\n");
+    console.log("Current dial:", tmpDial, "Current ticks:", tmpTicks);
     return [tmpDial, tmpTicks];
 }
 function main(FILE_TO_USE) {
@@ -67,5 +81,5 @@ function main(FILE_TO_USE) {
         console.error("Main error", error);
     }
 }
-var FILE = 'example-input.txt';
+var FILE = 'puzzle-input.txt';
 main(FILE);
